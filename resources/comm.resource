@@ -74,7 +74,10 @@ Send Command
     [Arguments]     ${command}
 
     ${ret}          Execute Command     ${command}      strip_prompt=${True}
-    Should Not Match Regexp    ${ret}                   (?im)^ERROR: .*$        Command "${command}" failed
+    Should Not Match Regexp
+    ...             ${ret}
+    ...             (?im)^ERROR: .*$
+    ...             Command "${command}" failed: ${ret}
     Should Not Match Regexp
     ...             ${ret}
     ...             (?im)^Exception \\(\d+\\):
