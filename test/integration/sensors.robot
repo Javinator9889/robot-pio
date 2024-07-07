@@ -34,7 +34,7 @@ Validate Wrong Sensor Data
     ...    to reject the data.
     [Template]      Write Invalid Sensor Data
 
-    FOR    ${sensor}    ${data}    IN ZIP    @{SENSORS}    @{INVALID_DATA}
+    FOR    ${sensor}    ${data}    IN ZIP    ${SENSORS}    ${INVALID_DATA}
         ${sensor}       ${data}
     END
 
@@ -55,7 +55,7 @@ Validate Sensor Data
     [Tags]          ${sensor}
     [Arguments]     ${sensor}
 
-    VAR    ${real}    ${SENSORS[${sensor.lower()}]}
+    VAR    ${real}    ${SENSORS["${sensor.lower()}"]}
     ${data}         Read ${sensor} Data
 
     Subscribe And Validate
@@ -68,5 +68,5 @@ Write Invalid Sensor Data
     [Tags]          ${sensor}
     [Arguments]     ${sensor}       ${data}
 
-    Run Keyword And Expect Error    ERROR: Invalid data for ${sensor}
+    Run Keyword And Expect Error    *ERROR: Invalid data for ${sensor}*
     ...             Write ${data} To ${sensor} Sensor

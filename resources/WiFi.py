@@ -5,7 +5,7 @@ from time import sleep
 from PyAccessPoint.pyaccesspoint import AccessPoint
 from robot.api.exceptions import Failure
 from robot.running.timeouts import KeywordTimeout
-from robot.utils.robottime import parse_time
+from robot.utils.robottime import timestr_to_secs
 
 _WAIT_FOR_DEVICE_CONNECTED = 30
 
@@ -101,7 +101,7 @@ class WiFi:
         Raises:
             :obj:`Failure`: If the device does not connect within the timeout.
         """
-        t = KeywordTimeout(parse_time(timeout))
         # FIXME: We have no means (yet) to know when a device connects to the access point.
         # Simply wait `_WAIT_FOR_DEVICE_CONNECTED` seconds and hope for the best :)
-        t.run(sleep, (_WAIT_FOR_DEVICE_CONNECTED,))
+        timeout_sec = timestr_to_secs(timeout)
+        # sleep(_WAIT_FOR_DEVICE_CONNECTED)

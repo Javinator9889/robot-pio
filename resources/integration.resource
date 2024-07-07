@@ -8,6 +8,8 @@ Library             ${CURDIR}/WiFi.py
 Library             Collections
 Library             MQTTLibrary
 
+Variables           ${CURDIR}/SensorData.py
+
 
 *** Variables ***
 ${SSID}                 RobotFramework
@@ -17,13 +19,6 @@ ${DEVICE_IP}            10.0.0.2
 ${MQTT_HELLO_TOPIC}     hello
 ${MQTT_SERVER}          localhost
 ${MQTT_PORT}            1883
-&{SENSORS}              temperature=temp    humidity=hum    noise=noise    light=light
-&{UNITS}                temp=C    hum=%    noise=dB    light=lux
-&{RANGES}
-...                     temp=${(${-40}, ${80})}
-...                     hum=${(${0}, ${100})}
-...                     noise=${(${0}, ${200})}
-...                     light=${(${0}, ${1000})}
 
 
 *** Keywords ***
@@ -31,19 +26,24 @@ Suite Setup
     [Documentation]    Sets up the suite. It starts the MQTT server and creates the serial session.
     ...    Loads the firmware to the device and performs the WiFi authentication.
 
-    ${device}               Find Available Device
+    ${device}    Find Available Device
     VAR    ${device}    scope=SUITE
-    Load Firmware           ${device}
+    Load Firmware    ${device}
 
     ${session}              Create Serial Session    ${device}
     VAR    ${session}    scope=SUITE
 
     Start MQTT Server
-    Connect                 ${MQTT_SERVER}      ${MQTT_PORT}
+    Wait Until Keyword Succeeds
+    ...                     1 minute
+    ...                     1 second
+    ...                     Connect
+    ...                     ${MQTT_SERVER}
+    ...                     ${MQTT_PORT}
 
     Set Access Point SSID    ${SSID}
     Set Access Point Password    ${PASSWORD}
-    Set Access Point IP     ${WIFI_NETWORK}
+    Set Access Point IP    ${WIFI_NETWORK}
     Start Access Point
 
     Board Connectivity Setup
@@ -102,26 +102,26 @@ Read ${Sensor} Data
 
     Dictionary Should Contain Key
     ...         ${SENSORS}
-    ...         ${Sensor}
+    ...         ${Sensor.lower()}
     ...         Invalid sensor "${Sensor}"
 
-    VAR    ${real}    ${SENSORS[${sensor.lower()}]}
-    VAR    ${unit}    ${UNITS[${sensor}]}
+    VAR    ${real}    ${SENSORS["${Sensor.lower()}"]}
+    VAR    ${unit}    ${UNITS["${real}"]}
 
-    Log         Reading ${sensor} sensor data
+    Log         Reading ${Sensor} sensor data
     ${read}     Send Command            sensor read ${real}
 
-    # https://regex101.com/r/6BXkww/1
+    # https://regex101.com/r/pVMPsq/1
     ${match}    ${data}                 Should Match Regexp
     ...         ${read}
-    ...         (^[1-9]\\d*(?:\\.\\d+)?)(?:${unit})$
+    ...         (-?[1-9]\\d*(?:\\.\\d+)?)(?:${unit})
     ...         Sensor reading failed
     ...         flags=IGNORECASE | MULTILINE
 
     ${data}     Convert To Number       ${data}
-    VAR    ${range}    ${RANGES[${real}]}
+    VAR    ${range}    ${RANGES["${real}"]}
 
-    IF    not ${range[0]} < ${data} <= ${range[1]}
+    IF    not $range[0] < ${data} <= $range[1]
         Fail    Sensor reading out of range: ${data} not in ${range}
     END
 
@@ -141,10 +141,10 @@ Write ${Data} To ${Sensor} Sensor
 
     Dictionary Should Contain Key
     ...             ${SENSORS}
-    ...             ${sensor}
+    ...             ${sensor.lower()}
     ...             Invalid sensor "${sensor}"
 
-    VAR    ${real}    ${SENSORS[${sensor.lower()}]}
+    VAR    ${real}    ${SENSORS["${sensor.lower()}"]}
     ${Data}         Convert To Number       ${Data}
 
     Send Command    sensor write ${real} ${Data}
@@ -154,5 +154,5 @@ Restore Sensors
     ...    sensors should return the correct data and not the written one.
 
     FOR    ${sensor}    IN    @{SENSORS}
-        Send Command    sensor reset ${SENSORS[${sensor}]}
+        Send Command    sensor reset ${SENSORS["${sensor}"]}
     END

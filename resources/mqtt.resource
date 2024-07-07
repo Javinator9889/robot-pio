@@ -6,10 +6,18 @@ Library             Process
 
 
 *** Variables ***
-${IMAGE}            eclipse-mosquitto
-${TAG}              2.0
-@{MQTT_SERVER}      docker    run    --rm    -p    1883:1883    -p    9001:9001    ${IMAGE}:${TAG}
-${ALIAS}            Mosquitto
+${IMAGE}                eclipse-mosquitto
+${TAG}                  2.0
+@{MQTT_SERVER_CMD}
+...    docker
+...    run
+...    --rm
+...    -p
+...    1883:1883
+...    -v
+...    ${CURDIR}/mosquitto.conf:/mosquitto/config/mosquitto.conf
+...    ${IMAGE}:${TAG}
+${MQTT_ALIAS}           Mosquitto
 
 
 *** Keywords ***
@@ -21,11 +29,14 @@ Start MQTT Server
     ...    `Stop MQTT Server` keyword.
     ...
     ...    Returns the alias of the server, to be used with the `Process` library.
-    Start Process       @{MQTT_SERVER}
-    ...                 alias=${ALIAS}
+    Start Process       @{MQTT_SERVER_CMD}
+    ...                 alias=${MQTT_ALIAS}
     ...                 stderr=STDOUT
 
-    Wait Until Keyword Succeeds    5 seconds    1 second        Process Should Be Running    Mosquitto
+    Wait Until Keyword Succeeds
+    ...                 1 minute
+    ...                 1 second
+    ...                 MQTT Server Should Be Running
 
     RETURN              Mosquitto
 
@@ -34,5 +45,19 @@ Stop MQTT Server
     ...    `Start MQTT Server` keyword.
     ...
     ...    Optionally, the alias of the server can be specified.
-    [Arguments]             ${alias}=${ALIAS}
+    [Arguments]             ${alias}=${MQTT_ALIAS}
     Terminate Process       ${alias}
+    Wait For Process        ${alias}    timeout=1 minute
+    ${rc}    Get Process Result      ${alias}
+    Log    ${rc.stdout}
+
+MQTT Server Should Be Running
+    [Documentation]    Verifies that the MQTT server is running. It checks if the
+    ...    process started by the `Start MQTT Server` keyword is still running.
+    ...
+    ...    Optionally, the alias of the server can be specified.
+    [Arguments]     ${alias}=${MQTT_ALIAS}
+    Process Should Be Running    ${alias}
+
+    ${ret}          Run Process     nc      -z      localhost       1883
+    Should Be Equal As Numbers    ${ret.rc}    0

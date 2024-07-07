@@ -11,8 +11,10 @@ python = "^3.12"
 robotframework = "^7.0.1"
 platformio = "^6.1.15"
 pyaccesspoint = "^0.2.5"
-paho-mqtt = "^2.1.0"
 robotframework-mqttlibrary = "^0.7.1.post3"
+# We have to stick to the 1.x version of the library because the 2.x version is not compatible
+# with the current version of "robotframework-mqttlibrary"
+paho-mqtt = "^1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.1"

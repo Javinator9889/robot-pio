@@ -13,6 +13,7 @@ ${TELNET_HOST}                  localhost
 ${BAUDRATE}                     115200
 ${TELNET_PROMPT}                >
 ${CONNECTION_ALIAS}             Serial
+${TELNET_TIMEOUT}               5 minutes
 
 
 *** Keywords ***
@@ -36,11 +37,11 @@ Create Serial Session
 
     IF    ${create_socatloop}
         ${handle}       Start Process       socat
-        ...             TCP-LISTEN:${telnet_host}:${telnet_port},reuseaddr,fork
+        ...             TCP-LISTEN:${telnet_port},reuseaddr,fork
         ...             FILE:${port},b${baudrate}
         ...             stderr=STDOUT
 
-        VAR    ${SOCATLOOP}    ${handle}    scope=TEST
+        VAR    ${SOCATLOOP}    ${handle}    scope=SUITE
     END
 
     Get Time
@@ -50,6 +51,7 @@ Create Serial Session
     ...                 port=${telnet_port}
     ...                 alias=${CONNECTION_ALIAS}
     ...                 prompt=${TELNET_PROMPT}
+    ...                 timeout=${TELNET_TIMEOUT}
 
     RETURN          ${CONNECTION_ALIAS}
 
@@ -76,10 +78,10 @@ Send Command
     ${ret}          Execute Command     ${command}      strip_prompt=${True}
     Should Not Match Regexp
     ...             ${ret}
-    ...             (?im)^ERROR: .*$
+    ...             (?im)ERROR: .*
     ...             Command "${command}" failed: ${ret}
     Should Not Match Regexp
     ...             ${ret}
-    ...             (?im)^Exception \\(\d+\\):
+    ...             (?im)Exception \\(\d+\\):
     ...             Command "${command}" caused an exception
     RETURN          ${ret}

@@ -20,12 +20,12 @@ ${EVENTS_QOS}       1
 
 *** Test Cases ***
 Trigger Events
-    [Documentation]    Validates that the noise event is triggered when the noise sensor reads a
+    [Documentation]    Validates that an event is triggered when the sensor reads a
     ...    value above the threshold.
     [Template]      Simulate Event Template
 
     FOR    ${sensor}    IN    @{THRESHOLDS}
-        ${sensor}       ${THRESHOLDS[${sensor}]}
+        ${sensor}       ${THRESHOLDS["${sensor}"]}
     END
 
 People In The Room
@@ -54,12 +54,13 @@ High Occupancy
 *** Keywords ***
 Simulate Event Template
     [Documentation]    Simulates an event by writing a value to the sensor.
-    [Arguments]     ${sensor}       ${value}
+    [Arguments]     ${sensor}           ${value}
 
     Write ${value} To ${sensor} Sensor
-    Subscribe And Validate    ${EVENTS_TOPIC}${sensor}      ${EVENTS_QOS}    1
+    VAR    ${real}    ${SENSORS["${sensor.lower()}"]}
+    Subscribe And Validate    ${EVENTS_TOPIC}${real}    ${EVENTS_QOS}    1
 
-    [Teardown]      Restore ${sensor} Sensor
+    [Teardown]      Restore Sensors
 
 High Occupancy Template
     [Documentation]    Verifies that writing values to different sensors trigger the
