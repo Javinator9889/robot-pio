@@ -36,7 +36,6 @@ jobs:
         find . -name '*.robot' -exec poetry run python -m robot.libdoc {} docs/{}.html \;
         find . -name '*.resource' -exec poetry run python -m robot.libdoc {} docs/{}.html \;
         find . -name '*.py' -exec poetry run python -m robot.libdoc {} docs/{}.html \;
-        poetry run python -m robot.libdoc --version > docs/version.html
     - name: Upload Libdoc
       uses: actions/upload-artifact@v4
       with:
