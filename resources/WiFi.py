@@ -4,10 +4,9 @@ from time import sleep
 
 from PyAccessPoint.pyaccesspoint import AccessPoint
 from robot.api.exceptions import Failure
-from robot.running.timeouts import KeywordTimeout
 from robot.utils.robottime import timestr_to_secs
 
-_WAIT_FOR_DEVICE_CONNECTED = 30
+_WAIT_FOR_DEVICE_CONNECTED = 5
 
 
 class WiFi:
@@ -91,7 +90,9 @@ class WiFi:
 
         self._ap.stop()
 
-    def wait_until_device_connected(self, device: str, timeout: str = "30 seconds") -> None:
+    def wait_until_device_connected(
+        self, device: str, timeout: str = "30 seconds"
+    ) -> None:
         """Waits until a device connects to the access point.
 
         Args:
@@ -103,5 +104,5 @@ class WiFi:
         """
         # FIXME: We have no means (yet) to know when a device connects to the access point.
         # Simply wait `_WAIT_FOR_DEVICE_CONNECTED` seconds and hope for the best :)
-        timeout_sec = timestr_to_secs(timeout)
-        # sleep(_WAIT_FOR_DEVICE_CONNECTED)
+        timeout_sec = timestr_to_secs(timeout)  # noqa: F841
+        sleep(_WAIT_FOR_DEVICE_CONNECTED)
