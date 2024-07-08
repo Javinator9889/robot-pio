@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "robot-pio"
+version = "0.1.0"
+description = "Hardware demonstration of Robot Framework through PlatformIO"
+authors = ["Javinator9889 <dev@javinator9889.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+robotframework = "^7.0.1"
+platformio = "^6.1.15"
+pyaccesspoint = "^0.2.5"
+robotframework-mqttlibrary = "^0.7.1.post3"
+# We have to stick to the 1.x version of the library because the 2.x version is not compatible
+# with the current version of "robotframework-mqttlibrary"
+paho-mqtt = "^1"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.1"
+robotframework-tidy = {version = "^4.13.0", extras = ["generate_config"]}
+
+[tool.robotidy]
+diff = false
+overwrite = true
+verbose = true
+separator = "space"
+spacecount = 4
+line_length = 99
+lineseparator = "native"
+skip_gitignore = false
+ignore_git_dir = false
+configure = [
+    "AddMissingEnd:enabled=True",
+    "AlignKeywordsSection:enabled=True:alignment_type=auto:handle_too_long=compact_overflow",
+    "AlignSettingsSection:enabled=True",
+    "AlignTemplatedTestCases:enabled=False",
+    "AlignTestCasesSection:enabled=True:alignment_type=auto:handle_too_long=compact_overflow",
+    "AlignVariablesSection:enabled=True",
+    "DiscardEmptySections:enabled=True",
+    "GenerateDocumentation:enabled=False",
+    "IndentNestedKeywords:enabled=False",
+    "InlineIf:enabled=True",
+    "MergeAndOrderSections:enabled=True",
+    "NormalizeAssignments:enabled=True",
+    "NormalizeComments:enabled=True",
+    "NormalizeNewLines:enabled=True",
+    "NormalizeSectionHeaderName:enabled=True",
+    "NormalizeSeparators:enabled=True",
+    "NormalizeSettingName:enabled=True",
+    "NormalizeTags:enabled=True",
+    "OrderSettings:enabled=True",
+    "OrderSettingsSection:enabled=True",
+    "OrderTags:enabled=False",
+    "RemoveEmptySettings:enabled=True",
+    "RenameKeywords:enabled=False",
+    "RenameTestCases:enabled=False",
+    "RenameVariables:enabled=False",
+    "ReplaceBreakContinue:enabled=True",
+    "ReplaceEmptyValues:enabled=True",
+    "ReplaceReturns:enabled=True",
+    "ReplaceRunKeywordIf:enabled=True",
+    "ReplaceWithVAR:enabled=False",
+    "SmartSortKeywords:enabled=False",
+    "SplitTooLongLine:enabled=True",
+    "Translate:enabled=False",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
