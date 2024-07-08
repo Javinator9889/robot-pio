@@ -12,8 +12,6 @@ Test Tags           sensor
 
 
 *** Variables ***
-&{SENSORS}          temperature=temp    humidity=hum    noise=noise    light=light
-&{UNITS}            temp=C    hum=%    noise=dB    light=lux
 @{INVALID_DATA}     1000    -1    200    -1
 ${TOPIC_BASE}       sensor/data/
 ${DEFAULT_QOS}      1

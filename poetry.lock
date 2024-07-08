@@ -468,19 +468,24 @@ files = [
 test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 
 [[package]]
-name = "pyaccesspoint"
+name = "PyAccessPoint"
 version = "0.2.5"
 description = "Package to manage wifi hotspot on linux"
 optional = false
 python-versions = "*"
-files = [
-    {file = "PyAccessPoint-0.2.5.tar.gz", hash = "sha256:618fa6f614f7e4ed65ce32b3c44de50b19a702fbeb26c420080b73e176159188"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 netifaces = "*"
 psutil = "*"
 wireless = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/Javinator9889/pyaccesspoint.git"
+reference = "HEAD"
+resolved_reference = "8d4f67a248e7e5165aca2d7d8d56050092c3154c"
 
 [[package]]
 name = "pyelftools"
@@ -812,4 +817,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "dfded23ee7dac63a2cfdc8ba781a9cd1c83cb0b7957a31ee5957328562741eaf"
+content-hash = "5ec72dee969cbd89387fd15ab008625b9d3a8fc861e9f4358f14c8d149f7a692"

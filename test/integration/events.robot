@@ -13,7 +13,6 @@ Test Tags           event
 
 
 *** Variables ***
-&{THRESHOLDS}       temperature=30    humidity=70    noise=80    light=500
 ${EVENTS_TOPIC}     events/
 ${EVENTS_QOS}       1
 
